@@ -1,0 +1,10 @@
+{
+  "name": "nlsd-pewpew",
+  "version": "0.0.1",
+  "description": "nlsd socketio server",
+  "dependencies": {
+    "amqplib": "^0.10.1",
+    "express": "^4.18.1",
+    "socket.io": "^4.5.1"
+  }
+}
