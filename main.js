@@ -11,21 +11,16 @@ const io = new Server(server, {
 });
 //Reqs for RabbitMQ consumer
 const amqplib = require('amqplib/callback_api');
-const queue = 'tasks';
-
-//serve index.html
+const queue = 'alert';
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
 });
-
-//set up listener for socket.io
 server.listen(3000, () => {
     console.log('listening on *:3000');
 });
@@ -36,7 +31,6 @@ amqplib.connect('amqp://localhost', (err, conn) => {
     conn.createChannel((err, ch2) => {
         if (err) throw err;
         ch2.assertQueue(queue);
-        //when a new event comes in, emit it to all clients
         ch2.consume(queue, (msg) => {
             if (msg !== null) {
                 io.emit('alert', { event_data: msg.content.toString() });
