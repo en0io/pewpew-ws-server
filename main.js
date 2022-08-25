@@ -7,7 +7,8 @@ const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
-    }
+    },
+    perMessageDeflate: false
 });
 //Reqs for RabbitMQ consumer
 const amqplib = require('amqplib/callback_api');
