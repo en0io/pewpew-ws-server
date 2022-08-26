@@ -4,7 +4,6 @@
   "description": "nlsd socketio server",
   "dependencies": {
     "amqplib": "^0.10.1",
-    "express": "^4.18.1",
-    "socket.io": "^4.5.1"
+    "ws": "^8.8.1"
   }
 }

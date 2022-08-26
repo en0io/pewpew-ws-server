@@ -1,30 +1,27 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const {Server} = require("socket.io");
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    },
-    perMessageDeflate: false
-});
+#!/usr/bin/env node
+
+//WS init
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({port: 4000});
+
 //Reqs for RabbitMQ consumer
 const amqplib = require('amqplib/callback_api');
 const queue = 'alert';
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
+
+wss.on('connection', function connection(ws) {
+    wss.on('connection', function connection(ws, req) {
+        const ip = req.socket.remoteAddress;
+        console.log(ip + " connected!")
     });
+
 });
-server.listen(3000, () => {
-    console.log('listening on *:3000');
-});
+
+//Broadcast to all clients
+wss.broadcast = function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        client.send(data);
+    });
+};
 
 //RabbitMQ Listener
 amqplib.connect('amqp://localhost', (err, conn) => {
@@ -34,11 +31,13 @@ amqplib.connect('amqp://localhost', (err, conn) => {
         ch2.assertQueue(queue);
         ch2.consume(queue, (msg) => {
             if (msg !== null) {
-                io.emit('alert', { event_data: msg.content.toString() });
+                wss.broadcast(msg.content.toString());
                 console.log(msg.content.toString());
                 ch2.ack(msg);
             } else {
                 console.log('message was null');
+                ch2.ack(msg);
+
             }
         });
     });
