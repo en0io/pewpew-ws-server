@@ -2,7 +2,7 @@
 
 //WS init
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({port: 4000});
+const wss = new WebSocket.Server({port: 3000});
 
 //Reqs for RabbitMQ consumer
 const amqplib = require('amqplib/callback_api');
