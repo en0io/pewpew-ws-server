@@ -2,6 +2,9 @@
   "name": "nlsd-pewpew",
   "version": "0.0.1",
   "description": "nlsd socketio server",
+  "scripts": {
+    "start": "node main.js"
+  },
   "dependencies": {
     "amqplib": "^0.10.1",
     "ws": "^8.8.1"
